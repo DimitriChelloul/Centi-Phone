@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "rootDir": "./src",
+    "outDir": "../dist",
+    "baseUrl": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "paths": {
+      "@dal/*": ["../../dal/src/*"],
+      "@domain/*": ["../../domain/src/*"],
+      "@utils/*": ["../utils/*"]
+    },
+    "composite": true,
+    "tsBuildInfoFile": "../dist/bll/.tsbuildinfo"
+  },
+  "include": ["src/**/*",
+"types/**/*",
+ "src/**/*"],
+  "exclude": ["node_modules", "../dist"],
+  "references": [
+    { "path": "../dal" },
+    { "path": "../domain" }
+  ]
+}

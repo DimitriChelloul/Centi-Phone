@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "outDir": "./dist",
+    "rootDir": "./",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "types": ["node", "jest"], 
+    "baseUrl": "./",
+    "paths": {
+      "@dal/*": ["dal/src/*"],
+      "@bll/*": ["bll/src/*"],
+      "@api/*": ["api/src/*"],
+      "@domain/*": ["domain/src/*"],
+      "@utils/*": ["utils/*"],
+      "@tests/*": ["tests/*"],
+      "@middleware/*": ["api/src/middleware/*"],
+      "@routes/*": ["api/src/routes/*"]
+    }
+  },
+  "include": [
+    "src/server.ts",
+    "api/src/**/*",
+    "bll/src/**/*",
+    "dal/src/**/*",
+    "tests/**/*",
+    "domain/src/**/*",
+    "types/**/*",
+    "src/**/*",
+    "src/DependanceInjection/**/*",
+    "utils/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

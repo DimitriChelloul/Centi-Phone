@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    /* Language and Environment */
+    "target": "ES2020",                   /* Utilise une version moderne de JavaScript. */
+    "module": "commonjs",                 /* Compatible avec Node.js. */
+    "rootDir": "./src",                   /* Répertoire contenant les fichiers source TypeScript. */
+    "outDir": "../dist",           /* Répertoire où les fichiers compilés seront générés. */
+    "strict": true,                       /* Active toutes les vérifications strictes. */
+    "esModuleInterop": true,              /* Assure la compatibilité avec les modules ES. */
+    "forceConsistentCasingInFileNames": true, /* Respecte la casse des noms de fichiers. */
+    "skipLibCheck": true,                 /* Ignore la vérification des types dans les dépendances. */
+    "composite": true,                    /* Permet la compilation incrémentale. */
+    "tsBuildInfoFile": "../dist/domain/.tsbuildinfo", /* Fichier pour la compilation incrémentale. */
+    "experimentalDecorators": true,       /* Activer les décorateurs (si nécessaire). */
+    "emitDecoratorMetadata": true         /* Générer les métadonnées des décorateurs (si nécessaire). */
+  },
+  "include": ["src/**/*",
+  "types/**/*",
+   "src/**/*"],                /* Inclut tous les fichiers dans le dossier src. */
+  "exclude": ["node_modules"],            /* Exclut le dossier node_modules. */
+  "paths": {
+   
+  }
+}
