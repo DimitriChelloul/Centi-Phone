@@ -3,7 +3,7 @@ export class Utilisateur {
     nom!: string;
     prenom!: string;
     email!: string;
-    motDePasse!: string;
+    mot_de_passe!: string;
     telephone?: string;
     adresse?: string;
     codePostal?: string;

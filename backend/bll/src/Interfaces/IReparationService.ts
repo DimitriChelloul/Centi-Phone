@@ -4,7 +4,7 @@ import { Devis } from '../../../domain/src/entities/devis';
 
 export interface IRepairService {
   // Gestion des rendez-vous
-  createRdv(utilisateurId: number, email: string, dateRdv: Date): Promise<void>;
+  createRdv(utilisateurId: number | undefined, email: string, dateRdv: Date): Promise<void>;
   getRdvsByUserId(utilisateurId: number): Promise<Rdv[]>;
   getRdvById(rdvId: number): Promise<Rdv | null>;
   cancelRdv(rdvId: number): Promise<void>;

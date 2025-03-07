@@ -42,7 +42,7 @@ export class ReviewRepository implements IReviewRepository {
   //Cette méthode est asynchrone et prend un paramètre avis de type Avis. Elle retourne une promesse de type Avis.
   async createReview(avis: Avis): Promise<Avis> {
     // La méthode query du client est utilisée pour exécuter une requête SQL d'insertion dans la table avis. Les valeurs des champs de l'avis sont passées en paramètres.
-    const result = await this.client.query(
+    const result = await pool.query(
       `INSERT INTO avis (utilisateur_id, produit_a_vendre_id, appareil_reconditionne_id, commentaire, note, date_creation)
        VALUES ($1, $2, $3, $4, $5, NOW()) RETURNING *`,
       [
@@ -65,7 +65,7 @@ export class ReviewRepository implements IReviewRepository {
     // La colonne à utiliser dans la requête SQL est déterminée en fonction du type de produit.
     const column = type === "produit" ? "produit_a_vendre_id" : "appareil_reconditionne_id";
     //La méthode query du client est utilisée pour exécuter une requête SQL de sélection dans la table avis
-    const result = await this.client.query(
+    const result = await pool.query(
       `SELECT * FROM avis WHERE ${column} = $1`,
       [productId]
     );
@@ -77,7 +77,7 @@ export class ReviewRepository implements IReviewRepository {
   // Cette méthode est asynchrone et prend un paramètre id (l'ID de l'avis). Elle retourne une promesse de type Avis ou null
   async getReviewById(id: number): Promise<Avis | null> {
     // La méthode query du client est utilisée pour exécuter une requête SQL de sélection dans la table avis pour récupérer l'avis par son ID.
-    const result = await this.client.query('SELECT * FROM avis WHERE id = $1', [id]);
+    const result = await pool.query('SELECT * FROM avis WHERE id = $1', [id]);
     // Si un avis est trouvé, une nouvelle instance de Avis est créée avec les données retournées par la requête et est retournée. Sinon, null est retourné.
     return result.rows.length > 0 ? new Avis(result.rows[0]) : null;
   }
@@ -86,6 +86,6 @@ export class ReviewRepository implements IReviewRepository {
   //Cette méthode est asynchrone et prend un paramètre id (l'ID de l'avis). Elle retourne une promesse de type void.
   async deleteReview(id: number): Promise<void> {
     //La méthode query du client est utilisée pour exécuter une requête SQL de suppression dans la table avis pour supprimer l'avis par son ID.
-    await this.client.query('DELETE FROM avis WHERE id = $1', [id]);
+    await pool.query('DELETE FROM avis WHERE id = $1', [id]);
   }
 }

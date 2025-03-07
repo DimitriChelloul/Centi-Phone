@@ -2,7 +2,7 @@ import express from "express";
 import { createPayment, validatePayment } from "../controllers/PaymentController";
 import { handleValidationErrors, validateCreatePayment, validateValidatePayment } from "../middleware/ValidatePayment";
 import { authenticateToken } from "../middleware/authenticateToken";
-import { csrfProtection } from "../middleware/csrf";
+
 
 //Un routeur Express est créé pour définir les routes de l'application.
 const router = express.Router();
@@ -22,7 +22,6 @@ const router = express.Router();
 router.post(
     "/create-payment",
     authenticateToken,
-    csrfProtection,
     validateCreatePayment, // Exécute les règles de validation
     handleValidationErrors, // Vérifie et renvoie les erreurs si présentes
     createPayment // Contrôleur principal
@@ -43,7 +42,6 @@ router.post(
   router.post(
     "/validate-payment",
     authenticateToken,
-    csrfProtection,
     validateValidatePayment, // Exécute les règles de validation
     handleValidationErrors, // Vérifie et renvoie les erreurs si présentes
     validatePayment // Contrôleur principal

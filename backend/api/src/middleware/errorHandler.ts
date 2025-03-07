@@ -29,6 +29,12 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
+
+// Vérifiez si les en-têtes ont déjà été envoyés
+if (res.headersSent) {
+  return next(err);
+}
+
   // L'erreur est loggée dans la console avec console.error. La propriété err.stack contient la trace de la pile de l'erreur, ce qui peut être utile pour le débogage.
   console.error(err.stack);
 

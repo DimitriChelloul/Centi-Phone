@@ -19,6 +19,8 @@ try {
   console.error("Erreur lors de la résolution de RepairService :", error);
 }
 
+console.log("🚀 Le serveur démarre bien à partir du fichier compilé !");
+
 // Récupérer le PORT depuis les variables d'environnement
 const PORT = process.env.PORT || 3000;
 

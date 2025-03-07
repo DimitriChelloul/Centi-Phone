@@ -12,6 +12,7 @@
     "emitDecoratorMetadata": true,
     "types": ["node", "jest"], 
     "baseUrl": "./",
+    "typeRoots": ["./node_modules/@types"],
     "paths": {
       "@dal/*": ["dal/src/*"],
       "@bll/*": ["bll/src/*"],

@@ -1,6 +1,6 @@
 export class Rdv {
     id?: number;
-    utilisateurId!: number;
+    utilisateurId?: number;
     appareilId?: number;
     problemeDescription?: string;
     dateRendezVous!: Date;

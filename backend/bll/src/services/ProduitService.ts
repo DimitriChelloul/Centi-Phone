@@ -24,6 +24,7 @@ export class ProductService implements IProductService {
   // Cette méthode est asynchrone et retourne une promesse de type tableau de ProduitsAVendre
   async getAllProductsToSell(): Promise<ProduitsAVendre[]> {
     //appelle la méthode getAllProductsToSell du repository de produits pour récupérer tous les produits à vendre.
+    console.log('🔹 [DEBUG] Service `getAllProductsToSell` appelé');
     return this.productRepo.getAllProductsToSell();
   }
 

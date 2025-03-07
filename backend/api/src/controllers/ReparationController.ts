@@ -15,27 +15,69 @@ export class ReparationController {
       // Si la résolution réussit, un message de succès est loggé
       console.log("RepairService résolu avec succès.");
     } catch (error) {
-      //Si une erreur se produit lors de la résolution du service, elle est loggée et relancée pour éviter une instanciation incorrecte du contrôleur
-      console.error("Erreur lors de la résolution de RepairService :", error);
       throw error; // Lancer une erreur pour éviter une instanciation incorrecte.
     }
   }
 
   // Créer un RDV
   // Cette méthode est asynchrone et prend trois paramètres : req (la requête), res (la réponse), et next (la fonction de gestion des erreurs)
-  createRdv = async (req: Request, res: Response, next: NextFunction) => {
+  createRdv = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      // Les propriétés utilisateurId, email, et dateRdv sont extraites du corps de la requête
-      const { utilisateurId, email, dateRdv } = req.body;
-      // La méthode createRdv du service RepairService est appelée avec les données extraites
-      await this.repairService.createRdv(utilisateurId, email, new Date(dateRdv));
-      //Si l'appel au service réussit, une réponse JSON avec un message de succès est renvoyée avec le statut 201
-      res.status(201).json({ message: "Rendez-vous créé avec succès." });
+      console.log("🔹 [DEBUG] Données reçues dans createRdv :", req.body);
+
+        // Vérifiez si l'utilisateur est authentifié
+        if (!req.user || !req.user.userId) {
+            res.status(401).json({ message: "Utilisateur non authentifié." });
+            return;
+        }
+
+        console.log('Utilisateur authentifié dans createRdv:', req.user);
+        console.log('Données reçues dans createRdv:', req.body);
+
+        // Vérifiez les données avant traitement
+        if (!req.body.dateRdv) {
+            console.error("❌ [ERROR] Date du rendez-vous manquante.");
+            res.status(400).json({ message: "Date du rendez-vous manquante." });
+            return;
+        }
+
+        const id = req.user?.userId || req.body.utilisateurId;
+        const { description, dateRdv } = req.body;
+
+
+        if (!id) {
+          console.error("❌ [ERROR] ID utilisateur manquant !");
+           res.status(401).json({ message: "Utilisateur non authentifié." });
+      }
+        console.log("🔹 [DEBUG] Données reçues dans createRdv:", req.body);
+
+        // Vérification et conversion de la date
+        let parsedDate;
+
+        console.log("🔹 [DEBUG] Valeur brute de dateRdv reçue:", dateRdv);
+        if (typeof dateRdv === "string") {
+            parsedDate = new Date(dateRdv);
+        } else {
+            parsedDate = dateRdv;
+        }
+
+        if (isNaN(parsedDate?.getTime())) {
+          console.error("❌ [ERROR] Format de date invalide :", dateRdv);
+          res.status(400).json({ message: "Format de date invalide." });
+          return;
+      }
+
+        console.log("🔹 [DEBUG] Date après conversion :", parsedDate);
+
+        // Appeler le service pour créer un rendez-vous
+        await this.repairService.createRdv(id, description, parsedDate);
+
+        res.status(201).json({ message: "Rendez-vous créé avec succès." });
     } catch (error) {
-      // Si une erreur se produit, elle est passée à la fonction next pour être gérée par le middleware d'erreur
-      next(error);
+        next(error);
     }
-  };
+};
+
 
   // Ajouter un suivi de réparation
   // Cette méthode est asynchrone et prend trois paramètres : req, res, et next.

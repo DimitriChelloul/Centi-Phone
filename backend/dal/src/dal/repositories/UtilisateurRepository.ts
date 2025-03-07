@@ -42,7 +42,7 @@ export class UtilisateurRepository implements IUtilisateurRepository {
   async getAllUtilisateurs(): Promise<Utilisateur[]> {
     try {
       //La methode query du client est appelée pour executer la requete de recuperation des utilisateurs
-      const result = await this.client.query('SELECT * FROM utilisateurs');
+      const result = await pool.query('SELECT * FROM utilisateurs');
       //les resultats de la requete sont mappés en entites de type utilisateur
       return result.rows.map((row) => new Utilisateur(row));
     } catch (error) {
@@ -59,7 +59,7 @@ export class UtilisateurRepository implements IUtilisateurRepository {
   async getUtilisateurById(id: number): Promise<Utilisateur | null> {
     try {
       //La methode query du client est appelée pour executer la requete sql de recuperation d un utilisateur par son id.
-      const result = await this.client.query('SELECT * FROM utilisateurs WHERE id = $1', [id]);
+      const result = await pool.query('SELECT * FROM utilisateurs WHERE id = $1', [id]);
      // Si un utilisateur est trouvée, une nouvelle instance de Utilisateur est créée avec les données retournées par la requête et est retournée. Sinon, null est retourné.
       return result.rows.length > 0 ? new Utilisateur(result.rows[0]) : null;
     } catch (error) {
@@ -72,18 +72,19 @@ export class UtilisateurRepository implements IUtilisateurRepository {
     }
   }
 
+
   //La méthode createUtilisateur insère un nouvel utilisateur dans la base de données et retourne l'utilisateur créé.
   async createUtilisateur(utilisateur: Utilisateur): Promise<Utilisateur> {
     try {
       //La methode query du client est appelée pour executer la requete sql de creation d un utilisateur.les valeurs des champs sont passés en parametres
-      const result = await this.client.query(
+      const result = await pool.query(
         `INSERT INTO utilisateurs (nom, prenom, email, mot_de_passe, telephone, adresse, code_postal, ville, role, consentement_rgpd)
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
         [
           utilisateur.nom,
           utilisateur.prenom,
           utilisateur.email,
-          utilisateur.motDePasse,
+          utilisateur.mot_de_passe,
           utilisateur.telephone,
           utilisateur.adresse,
           utilisateur.codePostal,
@@ -126,9 +127,9 @@ async updateUtilisateur(id: number, utilisateur: Partial<Utilisateur>): Promise<
           values.push(utilisateur.email);
           index++;
       }
-      if (utilisateur.motDePasse !== undefined) {
+      if (utilisateur.mot_de_passe !== undefined) {
           query += `mot_de_passe = $${index}, `;
-          values.push(utilisateur.motDePasse);
+          values.push(utilisateur.mot_de_passe);
           index++;
       }
       if (utilisateur.telephone !== undefined) {
@@ -168,7 +169,7 @@ async updateUtilisateur(id: number, utilisateur: Partial<Utilisateur>): Promise<
       query += ' RETURNING *';
 
       // Exécuter la requête
-      const result = await this.client.query(query, values);
+      const result = await pool.query(query, values);
       return new Utilisateur(result.rows[0]);
   } catch (error) {
       // Si une erreur survient, une exception est levée avec un message d'erreur approprié.
@@ -185,7 +186,7 @@ async updateUtilisateur(id: number, utilisateur: Partial<Utilisateur>): Promise<
   async deleteUtilisateur(id: number): Promise<void> {
     try {
       //La methode query du client est appelée pour executer la requete sql de suppression d un utilisateur
-      await this.client.query('DELETE FROM utilisateurs WHERE id = $1', [id]);
+      await pool.query('DELETE FROM utilisateurs WHERE id = $1', [id]);
     } catch (error) {
       //Si une erreur survient, une exception est levée avec un message d'erreur approprié.
       if (error instanceof Error) {
@@ -201,7 +202,7 @@ async updateUtilisateur(id: number, utilisateur: Partial<Utilisateur>): Promise<
   async getUtilisateurSessions(userId: number): Promise<Session[]> {
     try {
       //La methode query du client est appelée pour executer la requete sql pour recuperer la session d un utilisateur
-      const result = await this.client.query('SELECT * FROM sessions WHERE utilisateur_id = $1', [userId]);
+      const result = await pool.query('SELECT * FROM sessions WHERE utilisateur_id = $1', [userId]);
       // Les résultats de la requête sont mappés en instances de Session et retournés.
       return result.rows.map((row) => new Session(row));
     } catch (error) {
@@ -218,7 +219,7 @@ async updateUtilisateur(id: number, utilisateur: Partial<Utilisateur>): Promise<
   async createSession(session: Session): Promise<Session> {
     try {
       ////La methode query du client est appelée pour executer la requete sql pour creer une session
-      const result = await this.client.query(
+      const result = await pool.query(
         `INSERT INTO sessions (utilisateur_id, token_hash, date_creation, date_expiration, statut)
          VALUES ($1, $2, NOW(), $3, $4) RETURNING *`,
         [session.utilisateurId, session.tokenHash, session.dateExpiration, session.statut]
@@ -238,7 +239,7 @@ async updateUtilisateur(id: number, utilisateur: Partial<Utilisateur>): Promise<
   async deleteSession(sessionId: number): Promise<void> {
     try {
       //La methode query du client est appelée pour executer la requete sql pour supprimer une session
-      await this.client.query('DELETE FROM sessions WHERE id = $1', [sessionId]);
+      await pool.query('DELETE FROM sessions WHERE id = $1', [sessionId]);
     } catch (error) {
       //Si une erreur survient, une exception est levée avec un message d'erreur approprié.
       if (error instanceof Error) {
@@ -255,7 +256,7 @@ async updateUtilisateur(id: number, utilisateur: Partial<Utilisateur>): Promise<
   async getConsentHistoryByUserId(userId: number): Promise<HistoriqueConsentement[]> {
     try {
       ////La methode query du client est appelée pour executer la requete sql recuperer l historique de consentement d un utilisateur
-      const result = await this.client.query('SELECT * FROM historique_consentement WHERE utilisateur_id = $1', [userId]);
+      const result = await pool.query('SELECT * FROM historique_consentement WHERE utilisateur_id = $1', [userId]);
       // Les résultats de la requête sont mappés en instances de HistoriqueConsentement et retournés.
       return result.rows.map((row) => new HistoriqueConsentement(row));
     } catch (error) {
@@ -272,7 +273,7 @@ async updateUtilisateur(id: number, utilisateur: Partial<Utilisateur>): Promise<
   async addConsentHistory(history: HistoriqueConsentement): Promise<void> {
     try {
       //La methode query du client est appelée pour executer la requete sql pour ajouter le consentement au rgpd d un utilisateur
-      await this.client.query(
+      await pool.query(
         `INSERT INTO historique_consentement (utilisateur_id, type_consentement, statut, date_modification, source, adresse_ip)
          VALUES ($1, $2, $3, NOW(), $4, $5)`,
         [history.utilisateurId, history.typeConsentement, history.statut, history.source, history.adresseIp]
@@ -292,7 +293,7 @@ async updateUtilisateur(id: number, utilisateur: Partial<Utilisateur>): Promise<
   async logAdminAction(log: LogAdmin): Promise<void> {
     try {
       //La methode query du client est appelée pour executer la requete sql pour ajouter un log des actions d un admin
-      await this.client.query(
+      await pool.query(
         `INSERT INTO logs_admin (admin_id, action, date_action) VALUES ($1, $2, NOW())`,
         [log.adminId, log.action]
       );
@@ -311,7 +312,7 @@ async updateUtilisateur(id: number, utilisateur: Partial<Utilisateur>): Promise<
   async getAdminLogs(adminId: number): Promise<LogAdmin[]> {
     try {
       //La methode query du client est appelée pour executer la requete sql pour recuperer les logs des actions d un admin
-      const result = await this.client.query('SELECT * FROM logs_admin WHERE admin_id = $1', [adminId]);
+      const result = await pool.query('SELECT * FROM logs_admin WHERE admin_id = $1', [adminId]);
       // Les résultats de la requête sont mappés en instances de LogAdmin et retournés.
       return result.rows.map((row) => new LogAdmin(row));
     } catch (error) {

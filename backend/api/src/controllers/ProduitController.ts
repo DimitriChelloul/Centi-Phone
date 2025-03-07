@@ -17,11 +17,15 @@ export class ProductController {
   // Récupérer tous les produits à vendre
   //Cette méthode est asynchrone et prend trois paramètres : req (la requête), res (la réponse), et next (la fonction de gestion des erreurs
   getAllProductsToSell = async (req: Request, res: Response, next: NextFunction) => {
+    console.log('🔹 [DEBUG] Requête reçue.');
     try {
+      console.log('🔹 [DEBUG] Avant d’appeler getAllProductsToSell');
       // La méthode getAllProductsToSell du service ProductService est appelée pour récupérer tous les produits à vendre
       const products = await this.productService.getAllProductsToSell();
+      console.log('✅ [DEBUG] Produits récupérés:', products.length);
       //Si l'appel au service réussit, une réponse JSON avec les produits est renvoyée avec le statut 200
       res.status(200).json(products);
+      console.log('✅ [DEBUG] Réponse envoyée avec succès !');
     } catch (error) {
       //Si une erreur se produit, elle est passée à la fonction next pour être gérée par le middleware d'erreur
       next(error);

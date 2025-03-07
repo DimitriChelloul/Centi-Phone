@@ -2,7 +2,7 @@ import express from "express";
 import { CommandeController } from "../controllers/CommandeController";
 import { validateCreateCommande, validateCommandeId } from "../middleware/CommandeValidation";
 import { authenticateToken } from "../middleware/authenticateToken";
-import { csrfProtection } from "../middleware/csrf";
+
 
 //Un routeur Express est créé pour définir les routes de l'application.
 const router = express.Router();
@@ -21,7 +21,7 @@ const commandeController = new CommandeController();
     //csrfProtection : Protège contre les attaques CSRF.
     //validateCreateCommande : Valide les données pour créer une commande.
 //Contrôleur : commandeController.createCommande : Méthode du contrôleur pour créer une commande.
-router.post("/", authenticateToken,csrfProtection, validateCreateCommande, commandeController.createCommande);
+router.post("/", authenticateToken, validateCreateCommande, commandeController.createCommande);
 
 
 //Définition de la route /:commandeId :
@@ -32,7 +32,7 @@ router.post("/", authenticateToken,csrfProtection, validateCreateCommande, comma
    // csrfProtection : Protège contre les attaques CSRF.
    // validateCommandeId : Valide l'ID de la commande.
 //Contrôleur : commandeController.getCommandeById : Méthode du contrôleur pour récupérer une commande par son ID.
-router.get("/:commandeId", authenticateToken,csrfProtection, validateCommandeId, commandeController.getCommandeById);
+router.get("/:commandeId", authenticateToken, validateCommandeId, commandeController.getCommandeById);
 
 
 //Définition de la route /user/:utilisateurId :
@@ -42,7 +42,7 @@ router.get("/:commandeId", authenticateToken,csrfProtection, validateCommandeId,
    // authenticateToken : Authentifie le token JWT pour protéger la route.
    // csrfProtection : Protège contre les attaques CSRF.
 //Contrôleur : commandeController.getCommandesByUserId : Méthode du contrôleur pour récupérer les commandes d'un utilisateur par son ID.
-router.get("/user/:utilisateurId", authenticateToken,csrfProtection, commandeController.getCommandesByUserId);
+router.get("/user/:utilisateurId", authenticateToken, commandeController.getCommandesByUserId);
 
 
 //Définition de la route /:commandeId :
@@ -53,7 +53,7 @@ router.get("/user/:utilisateurId", authenticateToken,csrfProtection, commandeCon
    // csrfProtection : Protège contre les attaques CSRF.
    // validateCommandeId : Valide l'ID de la commande.
 //Contrôleur : commandeController.cancelCommande : Méthode du contrôleur pour annuler une commande.
-router.delete("/:commandeId", authenticateToken,csrfProtection, validateCommandeId, commandeController.cancelCommande);
+router.delete("/:commandeId", authenticateToken, validateCommandeId, commandeController.cancelCommande);
 
 
 //Définition de la route /:commandeId/details :
@@ -63,7 +63,7 @@ router.delete("/:commandeId", authenticateToken,csrfProtection, validateCommande
    // authenticateToken : Authentifie le token JWT pour protéger la route.
    // csrfProtection : Protège contre les attaques CSRF.
 //Contrôleur : commandeController.addCommandeDetail : Méthode du contrôleur pour ajouter un détail à une commande.
-router.post("/:commandeId/details", authenticateToken,csrfProtection, commandeController.addCommandeDetail);
+router.post("/:commandeId/details", authenticateToken, commandeController.addCommandeDetail);
 
 
 //Définition de la route /:commandeId/details :
@@ -74,7 +74,7 @@ router.post("/:commandeId/details", authenticateToken,csrfProtection, commandeCo
    // csrfProtection : Protège contre les attaques CSRF.
    // validateCommandeId : Valide l'ID de la commande.
 //Contrôleur : commandeController.getCommandeDetails : Méthode du contrôleur pour récupérer les détails d'une commande.
-router.get("/:commandeId/details", authenticateToken,csrfProtection, validateCommandeId, commandeController.getCommandeDetails);
+router.get("/:commandeId/details", authenticateToken, validateCommandeId, commandeController.getCommandeDetails);
 
 // Routes pour les livraisons
 
@@ -86,7 +86,7 @@ router.get("/:commandeId/details", authenticateToken,csrfProtection, validateCom
    // authenticateToken : Authentifie le token JWT pour protéger la route.
    // csrfProtection : Protège contre les attaques CSRF.
 //Contrôleur : commandeController.createLivraison : Méthode du contrôleur pour créer une livraison.
-router.post("/livraison", authenticateToken,csrfProtection, commandeController.createLivraison);
+router.post("/livraison", authenticateToken, commandeController.createLivraison);
 
 
 //Définition de la route /livraison/options :
@@ -96,7 +96,7 @@ router.post("/livraison", authenticateToken,csrfProtection, commandeController.c
    // authenticateToken : Authentifie le token JWT pour protéger la route.
    // csrfProtection : Protège contre les attaques CSRF.
 //Contrôleur : commandeController.getAllDeliveryOptions : Méthode du contrôleur pour récupérer toutes les options de livraison.
-router.get("/livraison/options", authenticateToken,csrfProtection, commandeController.getAllDeliveryOptions);
+router.get("/livraison/options", authenticateToken, commandeController.getAllDeliveryOptions);
 
 // Créer une commande et initier un paiement
 
@@ -112,7 +112,6 @@ router.get("/livraison/options", authenticateToken,csrfProtection, commandeContr
 router.post(
     "/create-and-pay",
     authenticateToken,
-    csrfProtection,
     validateCreateCommande,
     commandeController.createCommandeAndProcessPayment
   );
@@ -129,7 +128,6 @@ router.post(
 router.post(
     "/validate-payment",
     authenticateToken,
-    csrfProtection,
     commandeController.validatePayment
   );
 

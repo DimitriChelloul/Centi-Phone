@@ -12,7 +12,7 @@ export class PaymentService implements IPaymentService {
     if (!apiKey) {
       throw new Error("La clé secrète Stripe (STRIPE_SECRET_KEY) n'est pas définie dans les variables d'environnement.");
     }
-    this.stripe = new Stripe(apiKey, { apiVersion: "2024-12-18.acacia" });
+    this.stripe = new Stripe(apiKey, { apiVersion: "2025-01-27.acacia" });
   }
   
 

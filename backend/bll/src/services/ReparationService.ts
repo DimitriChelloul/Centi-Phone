@@ -26,37 +26,52 @@ export class RepairService implements IRepairService {
   // Cette méthode est asynchrone et prend trois paramètres :
   //  utilisateurId (l'ID de l'utilisateur), email (l'adresse email de l'utilisateur), et dateRdv (la date du rendez-vous).
   //  Elle retourne une promesse de type void.
-    async createRdv(utilisateurId: number, email: string, dateRdv: Date): Promise<void> {
-      // La méthode start de l'unité de travail est appelée pour démarrer une nouvelle transaction.
-      await this.unitOfWork.start();
-  
-      try {
-        // La méthode createRdv du repository de réparations est appelée pour créer un nouveau rendez-vous avec les informations fournies.
+  async createRdv(id: number, problemeDescription: string | undefined, dateRdv: Date): Promise<void> {
+    // Vérifie si la date est valide
+    if (!(dateRdv instanceof Date) || isNaN(dateRdv.getTime())) {
+        throw new Error("Format de date invalide.");
+    }
+
+    await this.unitOfWork.start();
+
+    try {
+
+      console.log("🔹 [DEBUG] Données envoyées à la DAL :", {
+        id,
+        problemeDescription,
+        dateRdv
+    });
+        // Étape 1 : Récupérer les informations de l'utilisateur
+        const utilisateur = await this.unitOfWork.utilisateurRepository.getUtilisateurById(id);
+        if (!utilisateur) {
+            throw new Error("Utilisateur non trouvé.");
+        }
+
+        // Étape 2 : Créer le rendez-vous
         const rdv = await this.unitOfWork.repairRepository.createRdv({
-          utilisateurId,
-          dateRendezVous: dateRdv,
-          statut: "en attente",
-          
+           utilisateurId: id,
+            problemeDescription,
+            dateRendezVous: dateRdv,
+            statut: "en attente",
         });
-  
-        // La méthode commit de l'unité de travail est appelée pour valider la transaction.
-        await this.unitOfWork.commit();
-  
-        //  Un email de confirmation est envoyé
-        //  à l'utilisateur en utilisant la méthode sendEmail du service d'email.
-        //  Le contenu de l'email est défini dans la variable emailHtml.
+
+        // Étape 3 : Envoyer un e-mail de confirmation
         const emailHtml = `
-          <h1>Confirmation de votre rendez-vous</h1>
-          <p>Votre rendez-vous est prévu pour le ${dateRdv.toLocaleString()}.</p>
+            <h1>Confirmation de votre rendez-vous</h1>
+            <p>Bonjour ${utilisateur.prenom},</p>
+            <p>Votre rendez-vous est confirmé pour le ${dateRdv.toLocaleString()}.</p>
+            <p>Description du problème : ${problemeDescription || "Non spécifiée"}.</p>
+            <p>Merci de votre confiance.</p>
         `;
-        //
-        await this.emailService.sendEmail(email, "Confirmation de rendez-vous", emailHtml);
-      } catch (error) {
-        // Si une erreur survient, la transaction est annulée en utilisant la méthode rollback de l'unité de travail, et l'erreur est relancée.
+        await this.emailService.sendEmail(utilisateur.email, "Confirmation de votre rendez-vous", emailHtml);
+
+        await this.unitOfWork.commit();
+    } catch (error) {
         await this.unitOfWork.rollback();
         throw error;
-      }
     }
+}
+
 
     // Cette méthode est asynchrone et prend un paramètre : utilisateurId (l'ID de l'utilisateur). Elle retourne une promesse de type tableau de Rdv
   async getRdvsByUserId(utilisateurId: number): Promise<Rdv[]> {

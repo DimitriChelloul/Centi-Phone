@@ -12,6 +12,7 @@
     "skipLibCheck": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "typeRoots": ["./node_modules/@types"],
     "paths": {
       "@bll/*": ["../../bll/src/*"],
       "@dal/*": ["../../dal/src/*"],

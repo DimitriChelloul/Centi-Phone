@@ -2,11 +2,12 @@ import express from "express";
 import { ProductController } from "../controllers/ProduitController";
 import { handleValidationErrors, validateProduct, validateStockUpdate } from "../middleware/ProduitValidation";
 import { authenticateToken } from "../middleware/authenticateToken";
-import { csrfProtection } from "../middleware/csrf";
+
 import upload from "../../src/Utils/upload";
 import multer from "multer";
 import { validateRefurbishedDevice } from "../middleware/reconditionnesValidation";
 import { checkRole } from "../middleware/checkRole";
+
 
 //Un routeur Express est créé pour définir les routes de l'application.
 const router = express.Router();
@@ -39,13 +40,11 @@ const Upload = multer({ storage });
 //Définition de la route /produits :
 //Méthode HTTP : GET
 //Chemin : /produits
-//Middlewares :
-  //  authenticateToken : Authentifie le token JWT pour protéger la route.
 //Contrôleur : productController.getAllProductsToSell : Méthode du contrôleur pour récupérer tous les produits à vendre.
-router.get("/produits", authenticateToken, productController.getAllProductsToSell);
+router.get("/produits", productController.getAllProductsToSell);
 
 // Route pour ajouter les appareils reconditionnes
-router.get("/appareilsreconditionnes", authenticateToken, productController.getAllRefurbishedDevices);
+router.get("/appareilsreconditionnes", productController.getAllRefurbishedDevices);
 
 
 //Définition de la route /produits :
@@ -61,7 +60,6 @@ router.post(
   "/produits",
   authenticateToken,
   checkRole("admin"),
-  csrfProtection,
   validateProduct, // Exécution des règles de validation
   handleValidationErrors, // Gestion des erreurs de validation
   Upload.single("photoProduit"), // Middleware pour gérer une seule image
@@ -72,7 +70,6 @@ router.post(
   "/appareils-reconditionnes",
   authenticateToken,
   checkRole("admin"),
-  csrfProtection,
   upload.single("photoProduit"), // Middleware pour gérer l'upload d'image
   validateRefurbishedDevice,    // Middleware de validation (à définir)
   handleValidationErrors,       // Gestion des erreurs de validation
@@ -95,7 +92,6 @@ router.post(
 router.put(
     "/produits/stock",
     authenticateToken,
-    csrfProtection,
     validateStockUpdate,      // Règles de validation
     handleValidationErrors,   // Gestion des erreurs
     productController.updateStock
@@ -111,7 +107,7 @@ router.put(
      // csrfProtection : Protège contre les attaques CSRF.
   //Contrôleur : productController.deleteProduct : Méthode du contrôleur pour supprimer un produit.
 
-router.delete("/products/:id", authenticateToken,checkRole("admin"),csrfProtection, productController.deleteProduct);
+router.delete("/products/:id", authenticateToken,checkRole("admin"), productController.deleteProduct);
 
 //Definition de la route /reconditionne/:id
 //Methode HTTP : DELETE
@@ -120,7 +116,7 @@ router.delete("/products/:id", authenticateToken,checkRole("admin"),csrfProtecti
 //authenticateToken : Authentifie le token JWT pour protéger la route.
 //csrfProtection : Protège contre les attaques CSRF.
 // Controleur : productController.deleteReconditionne : methode du controleur pour supprimer un appareil reconditionne
-router.delete("/reconditionne/:id", authenticateToken,checkRole("admin"),csrfProtection, productController.deleteReconditionne);
+router.delete("/reconditionne/:id", authenticateToken,checkRole("admin"),productController.deleteReconditionne);
 
 //Definition de la route /upload-image
 //Methode HTTP : post

@@ -2,7 +2,6 @@ import express from "express";
 import { AvisController } from "../controllers/AvisController";
 import { handleValidationErrors, validateCreateReview, validateIdParam } from "../middleware/AvisValidation";
 import { authenticateToken } from "../middleware/authenticateToken";
-import { csrfProtection } from "../middleware/csrf";
 import { checkRole } from "../middleware/checkRole";
 
 //Un routeur Express est créé pour définir les routes de l'application.
@@ -26,7 +25,6 @@ router.post(
   "/reviews",
   authenticateToken,
   validateCreateReview,
-  csrfProtection,
   handleValidationErrors,
   avisController.createReview
 );
@@ -43,7 +41,6 @@ router.post(
 router.get(
   "/reviews/product/:productId",
   authenticateToken,
-  csrfProtection,
   avisController.getReviewsByProductId
 );
 
@@ -62,7 +59,6 @@ router.get(
   "/reviews/:reviewId",
   authenticateToken,
   validateIdParam,
-  csrfProtection,
   handleValidationErrors,
   avisController.getReviewById
 );
@@ -83,7 +79,6 @@ router.delete(
   authenticateToken,
   checkRole("admin"),
   validateIdParam,
-  csrfProtection,
   handleValidationErrors,
   avisController.deleteReview
 );

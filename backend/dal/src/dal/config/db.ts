@@ -11,6 +11,9 @@ export const pool = new Pool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
+  max: 20,  // Augmente le nombre max de connexions
+  idleTimeoutMillis: 30000, // Ferme les connexions inactives après 30s
+  connectionTimeoutMillis: 2000,
 });
 
 // Événements de connexion et d'erreur
@@ -31,9 +34,23 @@ export const query = async (text: string, params?: any[]) => {
   const client = await pool.connect();
   try {
     const result = await client.query(text, params);
-    return result.rows;
-  } finally {
+    return result.rows;}
+    catch (error) {
+      console.error(`❌ Erreur lors de l'exécution de la requête: ${error}`);
+      throw error;
+    }
+   finally {
     client.release();
+  }
+};
+
+// Fonction pour vérifier la connexion
+export const testDbConnection = async () => {
+  try {
+    const res = await query('SELECT NOW()');
+    console.log('✅ Vérification de la connexion réussie:', res);
+  } catch (error) {
+    console.error('❌ Échec de la vérification de la connexion:', error);
   }
 };
 

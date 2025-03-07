@@ -1,14 +1,15 @@
-import jwt from "jsonwebtoken";
+import jwt, { Secret, SignOptions } from "jsonwebtoken";
 
 const SECRET_KEY = process.env.JWT_SECRET || "default_secret_key";
 
-export interface Payload {
-  userId: number;         // ID de l'utilisateur
-  email: string;          // Adresse e-mail
-  role: string;           // Rôle de l'utilisateur ('admin', 'client', etc.)
-  fullName?: string;      // Nom complet de l'utilisateur (optionnel)
-  iat?: number;           // Ajouté automatiquement : Date d'émission
-  exp?: number;           // Ajouté automatiquement : Date d'expiration
+// types.ts
+export interface JwtPayload {
+  userId: number;  // ⚠️ Changé de 'id' à 'userId' pour correspondre au token généré
+  email: string;
+  role: "client" | "admin" | "employé";
+  fullName: string;
+  iat?: number;
+  exp?: number;
 }
 
 /**
@@ -17,10 +18,28 @@ export interface Payload {
  * @param expiresIn - Durée de validité du token (ex : '1h', '7d').
  * @returns Le token JWT signé.
  */
-export const generateToken = (payload: Payload, expiresIn = "1h"): string => {
-  //utilise jwt.sign pour générer un token JWT signé avec la clé secrète et les options spécifiées.
-//Le token généré est retourné sous forme de chaîne de caractères.
-  return jwt.sign(payload, SECRET_KEY, { expiresIn });
+export const generateToken = (
+  payload: JwtPayload, 
+  expiresIn: jwt.SignOptions["expiresIn"] = "1h"
+): string => {
+  try {
+    // Type assertion plus claire pour SECRET_KEY
+    const secretKey = SECRET_KEY as string;
+    // Création d'un objet options typé
+    const signOptions = {
+      expiresIn: expiresIn
+    };
+    
+    // Utilisation de la méthode sign avec les types corrects
+    return jwt.sign(
+      payload as jwt.JwtPayload,
+      secretKey,
+      signOptions
+    );
+  } catch (error) {
+    console.error("Token generation failed:", error);
+    throw error;
+  }
 };
 
 /**
@@ -28,10 +47,10 @@ export const generateToken = (payload: Payload, expiresIn = "1h"): string => {
  * @param token - Le token JWT à vérifier.
  * @returns Le payload du token si valide, sinon null.
  */
-export const verifyToken = (token: string): Payload | null => {
+export const verifyToken = (token: string): JwtPayload | null => {
   try {
     //utilise jwt.verify pour vérifier et décoder le token avec la clé secrète.
-    return jwt.verify(token, SECRET_KEY) as Payload;
+    return jwt.verify(token, SECRET_KEY) as JwtPayload;
   } catch (error) {
     //Si une erreur se produit (par exemple, si le token est expiré ou invalide), l'erreur est loguée et la fonction retourne null.
     console.error("Token verification failed:", error);

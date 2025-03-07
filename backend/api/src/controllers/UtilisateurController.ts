@@ -5,11 +5,12 @@ import { container } from "tsyringe";
 import { UtilisateurService } from "../../../bll/src/services/UtilisateurService";
 import { IUtilisateurService } from "../../../bll/src/Interfaces/IUtilisateurService";  
 import { Utilisateur } from "../../../domain/src/entities/Utilisateurs";
-import { generateToken } from "../Utils/jwt.utils";
+
 import { asyncHandler } from "../Utils/asyncHandler";
 import { authenticateToken } from "../middleware/authenticateToken";
 import { body, validationResult } from "express-validator";
 import {validateDelete, validateLogin,validateRegister} from "../middleware/UtilisateurValidation";
+import { generateToken } from "../Utils/jwt.utils";
 
 
 
@@ -35,7 +36,7 @@ export const utilisateurController = {
           nom,
           prenom,
           email,
-          motDePasse: hashedPassword,
+          mot_de_passe: hashedPassword,
           role: role || "client",
          dateInscription: new Date(),
          consentementRgpd : true
@@ -57,17 +58,31 @@ export const utilisateurController = {
       // utilisent le conteneur de dépendances pour résoudre une instance de UtilisateurService et déstructurent le corps de la requête pour extraire les propriétés email et motDePasse.
       const utilisateurService = container.resolve(UtilisateurService);
       const { email, motDePasse } = req.body;
+
+      console.log("Email reçu :", email);
+      console.log("Mot de passe reçu :", motDePasse);
+
   
       try {
         // récupèrent tous les utilisateurs et trouvent l'utilisateur correspondant à l'email fourni.
         const utilisateurs = await utilisateurService.getAllUtilisateurs();
         const user = utilisateurs.find((u) => u.email === email);
+
+        console.log("Utilisateur trouvé :", user);
+        console.log("Mot de passe stocké :", user?.mot_de_passe);
   //Si l'utilisateur n'est pas trouvé, il renvoie une réponse JSON avec un message d'erreur et un statut 401.
         if (!user) {
           return res.status(401).json({ message: "Email ou mot de passe incorrect." });
         }
+
+        if (!user || !user.mot_de_passe) {
+          return res.status(401).json({ message: "Email ou mot de passe incorrect." });
+      }
+      if (!motDePasse || !user.mot_de_passe) {
+        return res.status(400).json({ message: "Mot de passe non fourni" });
+    }
   //comparent le mot de passe fourni avec le mot de passe haché de l'utilisateur. Si les mots de passe ne correspondent pas, il renvoie une réponse JSON avec un message d'erreur et un statut 401.
-        const isMatch = await bcrypt.compare(motDePasse, user.motDePasse);
+        const isMatch = await bcrypt.compare(motDePasse, user.mot_de_passe);
         if (!isMatch) {
           return res.status(401).json({ message: "Email ou mot de passe incorrect." });
         }
@@ -76,12 +91,12 @@ export const utilisateurController = {
             return res.status(500).json({ message: "L'ID utilisateur est introuvable." });
           }
 //génère un jeton JWT avec les informations de l'utilisateur et une durée de validité de 7 jours.
-        const token = generateToken({
-          userId: user.id,
-          email: user.email,
-          role: user.role,
-          fullName: `${user.nom} ${user.prenom}`,
-        }, "7d");
+const token = generateToken({
+  userId: user.id,
+  email: user.email,
+  role: user.role,
+  fullName: `${user.nom} ${user.prenom}`
+}, "7d");
   //renvoie une réponse JSON avec un message de succès et le jeton JWT si l'opération réussit
         res.status(200).json({ message: "Connexion réussie.", token });
       } catch (error) {
@@ -97,6 +112,7 @@ export const utilisateurController = {
         // renvoie une réponse JSON avec les détails du profil
         res.status(200).json({ message: "Profil utilisateur récupéré.", data: req.user });
       } catch (error) {
+        console.error("Erreur lors de la connexion :", error);
         //Si une erreur se produit, il renvoie une réponse JSON avec un message d'erreur et un statut 500.
         res.status(500).json({ message: (error as Error).message });
       }
@@ -161,7 +177,7 @@ async updateUser(req: Request, res: Response, next: NextFunction): Promise<any> 
       };
 
       if (motDePasse) {
-          updatedUser.motDePasse = await bcrypt.hash(motDePasse, 10);
+          updatedUser.mot_de_passe = await bcrypt.hash(motDePasse, 10);
       }
 
       const updated = await utilisateurService.updateUtilisateur(utilisateurId, updatedUser);
@@ -170,6 +186,8 @@ async updateUser(req: Request, res: Response, next: NextFunction): Promise<any> 
       next(error);
   }
 }
+
+
 
 };
 

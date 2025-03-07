@@ -45,7 +45,7 @@ export class ProductRepository implements IProductRepository {
     try {
 
       //La méthode query du client est utilisée pour exécuter une requête SQL de sélection dans la table produits_a_vendre pour récupérer le produit par son ID.
-      const result = await this.client.query(
+      const result = await pool.query(
         `SELECT * FROM produits_a_vendre WHERE id = $1`,
         [id]
       );
@@ -67,9 +67,12 @@ export class ProductRepository implements IProductRepository {
   // Gestion des produits à vendre
   //Cette méthode est asynchrone et retourne une promesse de type tableau de ProduitsAVendre
   async getAllProductsToSell(): Promise<ProduitsAVendre[]> {
+    console.log('🔹 [DEBUG] Entrée dans getAllProductsToSell()...');
     try {
+      console.log('🔹 [DEBUG] Exécution de la requête SQL...');
       // La méthode query du client est utilisée pour exécuter une requête SQL de sélection dans la table produits_a_vendre pour récupérer tous les produits à vendre.
-      const result = await this.client.query('SELECT * FROM produits_a_vendre');
+      const result = await pool.query('SELECT * FROM produits_a_vendre');
+      console.log('✅ [DEBUG] Résultat SQL obtenu:', result, 'lignes.');
       // Les résultats de la requête sont mappés en instances de ProduitsAVendre et retournés.
       return result.rows.map((row) => new ProduitsAVendre(row));
     } catch (error) {
@@ -83,7 +86,7 @@ export class ProductRepository implements IProductRepository {
   async getProductToSellById(id: number): Promise<ProduitsAVendre | null> {
     try {
       // La méthode query du client est utilisée pour exécuter une requête SQL de sélection dans la table produits_a_vendre pour récupérer le produit par son ID.
-      const result = await this.client.query('SELECT * FROM produits_a_vendre WHERE id = $1', [id]);
+      const result = await pool.query('SELECT * FROM produits_a_vendre WHERE id = $1', [id]);
       //Si un produit est trouvé, une nouvelle instance de ProduitsAVendre est créée avec les données retournées par la requête et est retournée. 
       if (result.rows.length > 0){
         return new ProduitsAVendre(result.rows[0]);
@@ -104,7 +107,7 @@ export class ProductRepository implements IProductRepository {
     try {
       // La méthode query du client est utilisée pour exécuter une requête SQL d'insertion dans la table produits_a_vendre.
       //  Les valeurs des champs du produit sont passées en paramètres.
-      const result = await this.client.query(
+      const result = await pool.query(
         `INSERT INTO produits_a_vendre (nom, description, photo_produit, prix, stock, date_ajout)
          VALUES ($1, $2, $3, $4, $5, NOW()) RETURNING *`,
         [produit.nom, produit.description, produit.photoProduit, produit.prix, produit.stock]
@@ -149,7 +152,7 @@ export class ProductRepository implements IProductRepository {
       //  La méthode query du client est utilisée
       //  pour exécuter une requête SQL de mise à jour dans la table produits_a_vendre.
       //  Les valeurs des champs à mettre à jour sont passées en paramètres.
-      const result = await this.client.query(
+      const result = await pool.query(
         `UPDATE produits_a_vendre SET ${columns} WHERE id = $1 RETURNING *`,
         [produitId, ...values]
       );
@@ -198,7 +201,7 @@ export class ProductRepository implements IProductRepository {
   
       //  La méthode query du client est utilisée pour exécuter une requête SQL 
       // de mise à jour dans la table appareils_reconditionnes. Les valeurs des champs à mettre à jour sont passées en paramètres.
-      const result = await this.client.query(
+      const result = await pool.query(
         `UPDATE appareils_reconditionnes SET ${columns} WHERE id = $1 RETURNING *`,
         [deviceId, ...values]
       );
@@ -222,7 +225,7 @@ export class ProductRepository implements IProductRepository {
   async deleteProduct(id: number): Promise<void> {
     try {
       // La méthode query du client est utilisée pour exécuter une requête SQL de suppression dans la table produits_a_vendre pour supprimer le produit par son ID.
-      await this.client.query('DELETE FROM produits_a_vendre WHERE id = $1', [id]);
+      await pool.query('DELETE FROM produits_a_vendre WHERE id = $1', [id]);
     } catch (error) {
       //Si une erreur survient, elle est loguée dans la console et une nouvelle erreur est levée avec un message descriptif
       console.error(`Error deleting product to sell with id ${id}:`, error);
@@ -236,11 +239,11 @@ export class ProductRepository implements IProductRepository {
     try {
       //La méthode query du client est utilisée pour exécuter une requête SQL de sélection dans la table appareils_reconditionnes
       //  avec des jointures sur les tables marques et modeles pour récupérer tous les appareils reconditionnés avec leurs marques et modèles associés.
-      const result = await this.client.query(
+      const result = await pool.query(
         `SELECT ar.*, m.nom_marque, md.nom_modele
          FROM appareils_reconditionnes ar
-         JOIN marques m ON ar.id_marque = m.id
-         JOIN modeles md ON ar.id_modele = md.id`
+         JOIN marques m ON ar.idmarque = m.id
+         JOIN modeles md ON ar.idmodele = md.id`
       );
       // Les résultats de la requête sont mappés en instances de ProduitsReconditionnes et retournés.
       return result.rows.map(
@@ -263,11 +266,11 @@ export class ProductRepository implements IProductRepository {
     try {
       // La méthode query du client est utilisée pour exécuter une requête SQL de sélection dans la table appareils_reconditionnes
       //  avec des jointures sur les tables marques et modeles pour récupérer l'appareil reconditionné par son ID avec sa marque et son modèle associés.
-      const result = await this.client.query(
+      const result = await pool.query(
         `SELECT ar.*, m.nom_marque, md.nom_modele
          FROM appareils_reconditionnes ar
-         JOIN marques m ON ar.id_marque = m.id
-         JOIN modeles md ON ar.id_modele = md.id
+         JOIN marques m ON ar.idmarque = m.id
+         JOIN modeles md ON ar.idmodele = md.id
          WHERE ar.id = $1`,
         [id]
       );
@@ -297,8 +300,8 @@ export class ProductRepository implements IProductRepository {
     try {
       // La méthode query du client est utilisée pour exécuter une requête SQL d'insertion dans la table appareils_reconditionnes.
       //  Les valeurs des champs de l'appareil sont passées en paramètres
-      const result = await this.client.query(
-        `INSERT INTO appareils_reconditionnes (id_marque, id_modele, description, photo_produit, prix, stock, garantie_mois, date_reconditionnement, date_ajout)
+      const result = await pool.query(
+        `INSERT INTO appareils_reconditionnes (idmarque, idmodele, description, photo_produit, prix, stock, garantie_mois, date_reconditionnement, date_ajout)
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW()) RETURNING *`,
         [
           device.idMarque,
@@ -324,7 +327,7 @@ export class ProductRepository implements IProductRepository {
   async deleteRefurbishedDevice(id: number): Promise<void> {
     try {
       //La méthode query du client est utilisée pour exécuter une requête SQL de suppression dans la table appareils_reconditionnes pour supprimer l'appareil par son ID.
-      await this.client.query('DELETE FROM appareils_reconditionnes WHERE id = $1', [id]);
+      await pool.query('DELETE FROM appareils_reconditionnes WHERE id = $1', [id]);
     } catch (error) {
       //Si une erreur survient, elle est loguée dans la console et une nouvelle erreur est levée avec un message descriptif.
       console.error(`Error deleting refurbished device with id ${id}:`, error);
@@ -337,7 +340,7 @@ export class ProductRepository implements IProductRepository {
   async getAllBrands(): Promise<Marques[]> {
     try {
       // La méthode query du client est utilisée pour exécuter une requête SQL de sélection dans la table marques pour récupérer toutes les marques.
-      const result = await this.client.query('SELECT * FROM marques');
+      const result = await pool.query('SELECT * FROM marques');
       // Les résultats de la requête sont mappés en instances de Marques et retournés.
       return result.rows.map((row) => new Marques(row));
     } catch (error) {
@@ -351,7 +354,7 @@ export class ProductRepository implements IProductRepository {
   async getBrandById(id: number): Promise<Marques | null> {
     try {
       // La méthode query du client est utilisée pour exécuter une requête SQL de sélection dans la table marques pour récupérer la marque par son ID.
-      const result = await this.client.query('SELECT * FROM marques WHERE id = $1', [id]);
+      const result = await pool.query('SELECT * FROM marques WHERE id = $1', [id]);
       //Si une marque est trouvée, une nouvelle instance de Marques est créée avec les données retournées par la requête et est retournée
       if (result.rows.length > 0){
         return new Marques(result.rows[0]);
@@ -372,7 +375,7 @@ export class ProductRepository implements IProductRepository {
     try {
       // La méthode query du client est utilisée pour exécuter une requête SQL de sélection 
       // dans la table modeles pour récupérer tous les modèles associés à la marque par son ID.
-      const result = await this.client.query('SELECT * FROM modeles WHERE id_marque = $1', [brandId]);
+      const result = await pool.query('SELECT * FROM modeles WHERE id_marque = $1', [brandId]);
       // Les résultats de la requête sont mappés en instances de Modele et retournés.
       return result.rows.map((row) => new Modele(row));
     } catch (error) {
@@ -394,6 +397,6 @@ export class ProductRepository implements IProductRepository {
       `;
       // La méthode query du client est utilisée pour exécuter une requête SQL 
       // de mise à jour dans la table produits_a_vendre pour mettre à jour le stock du produit par son ID.
-      await this.client.query(query, [quantityChange, productId]);
+      await pool.query(query, [quantityChange, productId]);
     }
 }

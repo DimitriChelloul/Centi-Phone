@@ -2,40 +2,47 @@ import nodemailer from "nodemailer";
 import { injectable } from "tsyringe";
 import { IEmailService } from "../Interfaces/IEmailService";
 
-//: La classe EmailService est déclarée et exportée pour être utilisée ailleurs dans l'application.
-//  Elle implémente l'interface IEmailService. Le décorateur @injectable() est utilisé pour indiquer que cette classe peut être injectée comme dépendance.
 @injectable()
 export class EmailService implements IEmailService {
-
-  // La propriété transporter est déclarée comme privée et de type nodemailer.Transporter. Elle sera utilisée pour envoyer des emails.
   private transporter: nodemailer.Transporter;
 
-  // Le constructeur initialise la propriété transporter en utilisant la méthode createTransport de nodemailer. 
-  // Les paramètres de configuration incluent le service (gmail), l'utilisateur (process.env.EMAIL_USER), et le mot de passe (process.env.EMAIL_PASSWORD).
   constructor() {
+    if (!process.env.SMTP_HOST || !process.env.SMTP_PORT || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
+      console.error("❌ [ERROR] Les variables d'environnement SMTP ne sont pas correctement définies.");
+      throw new Error("Configuration SMTP manquante. Vérifiez votre fichier .env.");
+    }
+
+    console.log("✅ [DEBUG] Initialisation du service d'email avec :");
+    console.log("🔹 SMTP_HOST:", process.env.SMTP_HOST);
+    console.log("🔹 SMTP_PORT:", process.env.SMTP_PORT);
+    console.log("🔹 SMTP_USER:", process.env.SMTP_USER);
+
     this.transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: process.env.SMTP_HOST,  // Serveur SMTP (ex: smtp.gmail.com)
+      port: parseInt(process.env.SMTP_PORT || "2525"), // Port SMTP (587 pour TLS, 465 pour SSL, 2525 pour Mailtrap)
+      secure: false, // true pour 465 (SSL), false pour 587 (TLS)
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD,
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
       },
     });
   }
 
-  // Cette méthode est asynchrone et prend trois paramètres :
-  //  to (l'adresse email du destinataire), subject (le sujet de l'email), et html (le contenu HTML de l'email). Elle retourne une promesse de type void.
   async sendEmail(to: string, subject: string, html: string): Promise<void> {
     try {
-      //La méthode sendMail du transporter est appelée pour envoyer l'email avec les paramètres fournis (from, to, subject, html).
+      console.log(`📧 [DEBUG] Envoi d'un email à ${to}...`);
+
       await this.transporter.sendMail({
-        from: process.env.EMAIL_USER,
+        from: `"Centi-Phone" <${process.env.SMTP_USER}>`,
         to,
         subject,
         html,
       });
+
+      console.log(`✅ [SUCCESS] Email envoyé avec succès à ${to}`);
     } catch (error) {
-      // Si une erreur survient, elle est capturée dans le bloc catch et une nouvelle erreur est levée avec un message descriptif.
-      throw new Error(`Erreur lors de l'envoi de l'e-mail : ${(error as Error).message}`);
+      console.error("❌ [ERROR] Erreur lors de l'envoi de l'email :", error);
+      throw new Error("Erreur lors de l'envoi de l'email.");
     }
   }
 }

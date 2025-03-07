@@ -13,6 +13,8 @@ export const checkRole = (requiredRole: string): RequestHandler => {
 
     const token = authHeader.split(" ")[1];
 
+
+
     try {
       const decodedToken: any = jwt.verify(token, process.env.JWT_SECRET!);
 
@@ -21,7 +23,9 @@ export const checkRole = (requiredRole: string): RequestHandler => {
         res.status(403).json({ message: "Accès refusé : rôle insuffisant" });
         return;
       }
-
+      console.log("Token reçu:", token);
+      console.log("Token décodé:", decodedToken);
+      console.log("Rôle requis:", requiredRole);
       // Ajouter les informations de l'utilisateur décodées au `req` pour un usage futur
       (req as any).user = decodedToken;
 

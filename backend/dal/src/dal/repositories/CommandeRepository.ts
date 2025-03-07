@@ -44,7 +44,7 @@ export class CommandRepository implements ICommandRepository {
     try {
       // La méthode query du client est utilisée pour exécuter une requête SQL d'insertion dans la table commandes.
       //  Les valeurs des champs de la commande sont passées en paramètres.
-      const result = await this.client.query(
+      const result = await pool.query(
         `INSERT INTO commandes (utilisateur_id, total, date_commande) 
          VALUES ($1, $2, NOW()) RETURNING *`,
         [command.utilisateurId, command.total]
@@ -62,7 +62,7 @@ export class CommandRepository implements ICommandRepository {
   async getCommandById(id: number): Promise<Commande | null> {
     try {
       // La méthode query du client est utilisée pour exécuter une requête SQL de sélection dans la table commandes pour récupérer la commande par son ID.
-      const result = await this.client.query('SELECT * FROM commandes WHERE id = $1', [id]);
+      const result = await pool.query('SELECT * FROM commandes WHERE id = $1', [id]);
       //Si une commande est trouvée, une nouvelle instance de Commande est créée avec les données retournées par la requête et est retournée. Sinon, null est retourné.
       return result.rows.length > 0 ? new Commande(result.rows[0]) : null;
     } catch (error) {
@@ -77,7 +77,7 @@ export class CommandRepository implements ICommandRepository {
     try {
       // La méthode query du client est utilisée pour exécuter une requête SQL de sélection dans la table commandes
       //  pour récupérer les commandes de l'utilisateur par son ID.
-      const result = await this.client.query('SELECT * FROM commandes WHERE utilisateur_id = $1', [userId]);
+      const result = await pool.query('SELECT * FROM commandes WHERE utilisateur_id = $1', [userId]);
       // Les résultats de la requête sont mappés en instances de Commande et retournés.
       return result.rows.map((row: any) => new Commande(row));
     } catch (error) {
@@ -91,7 +91,7 @@ export class CommandRepository implements ICommandRepository {
   async deleteCommand(id: number): Promise<void> {
     try {
       // La méthode query du client est utilisée pour exécuter une requête SQL de suppression dans la table commandes pour supprimer la commande par son ID.
-      await this.client.query('DELETE FROM commandes WHERE id = $1', [id]);
+      await pool.query('DELETE FROM commandes WHERE id = $1', [id]);
     } catch (error) {
       //Si une erreur survient, elle est loguée dans la console et une nouvelle erreur est levée avec un message descriptif.
       console.error('Error deleting command:', error);
@@ -105,7 +105,7 @@ export class CommandRepository implements ICommandRepository {
     try {
       // La méthode query du client est utilisée pour exécuter une requête SQL de sélection
       //  dans la table details_commande pour récupérer les détails de la commande par son ID.
-      const result = await this.client.query('SELECT * FROM details_commande WHERE commande_id = $1', [commandId]);
+      const result = await pool.query('SELECT * FROM details_commande WHERE commande_id = $1', [commandId]);
       // Les résultats de la requête sont mappés en instances de CommandDetail et retournés.
       return result.rows.map((row: any) => new CommandDetail(row));
     } catch (error) {
@@ -120,7 +120,7 @@ export class CommandRepository implements ICommandRepository {
     try {
       // La méthode query du client est utilisée pour exécuter une requête SQL d'insertion dans la table details_commande.
       //  Les valeurs des champs du détail de la commande sont passées en paramètres.
-      const result = await this.client.query(
+      const result = await pool.query(
         `INSERT INTO details_commande (commande_id, produit_a_vendre_id, appareil_reconditionne_id, quantite, prix_unitaire) 
          VALUES ($1, $2, $3, $4, $5) RETURNING *`,
         [
@@ -146,7 +146,7 @@ export class CommandRepository implements ICommandRepository {
     try {
       // La méthode query du client est utilisée pour exécuter une requête SQL d'insertion dans la table livraisons.
       //  Les valeurs des champs de la livraison sont passées en paramètres.
-      const result = await this.client.query(
+      const result = await pool.query(
         `INSERT INTO livraisons (commande_id, option_livraison_id, adresse_livraison, date_livraison_prevue, statut) 
          VALUES ($1, $2, $3, $4, $5) RETURNING *`,
         [
@@ -170,7 +170,7 @@ export class CommandRepository implements ICommandRepository {
   async getLivraisonByCommandId(commandId: number): Promise<Livraison | null> {
     try {
       // La méthode query du client est utilisée pour exécuter une requête SQL de sélection dans la table livraisons pour récupérer la livraison par l'ID de la commande.
-      const result = await this.client.query('SELECT * FROM livraisons WHERE commande_id = $1', [commandId]);
+      const result = await pool.query('SELECT * FROM livraisons WHERE commande_id = $1', [commandId]);
       // Si une livraison est trouvée, une nouvelle instance de Livraison est créée avec les données retournées par la requête et est retournée. Sinon, null est retourné.
       return result.rows.length > 0 ? new Livraison(result.rows[0]) : null;
     } catch (error) {
@@ -184,7 +184,7 @@ export class CommandRepository implements ICommandRepository {
   async getAllDeliveryOptions(): Promise<OptionsDeLivraison[]> {
     try {
       // La méthode query du client est utilisée pour exécuter une requête SQL de sélection dans la table options_livraison pour récupérer toutes les options de livraison.
-      const result = await this.client.query('SELECT * FROM options_livraison');
+      const result = await pool.query('SELECT * FROM options_livraison');
       // Les résultats de la requête sont mappés en instances de OptionsDeLivraison et retournés.
       return result.rows.map((row: any) => new OptionsDeLivraison(row));
     } catch (error) {
@@ -206,6 +206,6 @@ export class CommandRepository implements ICommandRepository {
 
      // La méthode query du client est utilisée pour exécuter une requête SQL
     //  de mise à jour dans la table commandes pour mettre à jour le statut de paiement de la commande par son ID.
-    await this.client.query(query, [statut, commandeId]);
+    await pool.query(query, [statut, commandeId]);
   }
 }
