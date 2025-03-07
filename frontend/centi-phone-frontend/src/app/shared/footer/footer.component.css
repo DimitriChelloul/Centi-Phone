@@ -1,0 +1,130 @@
+/* Conteneur principal du footer */
+.footer-container {
+    background-color: #000; /* Fond noir */
+    color: #ffd700; /* Texte or */
+    padding: 40px 20px;
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  
+  /* Contenu du footer */
+  .footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: flex-start;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  /* Sections du footer */
+  .footer-section {
+    flex: 1;
+    margin: 20px;
+    min-width: 250px;
+  }
+  
+  .footer-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #ffd700;
+    display: inline-block;
+    padding-bottom: 5px;
+  }
+  
+  .footer-section p {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #fff;
+  }
+  
+  .footer-section ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .footer-section ul li {
+    margin: 10px 0;
+  }
+  
+  .footer-section ul li a {
+    text-decoration: none;
+    color: #ffd700;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+  }
+  
+  .footer-section ul li a:hover {
+    color: #e6c200;
+  }
+  
+  /* Icônes de réseaux sociaux */
+  .social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+  }
+  
+  .social-icons a img {
+    width: 40px;
+    height: 40px;
+    transition: transform 0.3s ease;
+  }
+  
+  .social-icons a:hover img {
+    transform: scale(1.1);
+  }
+  
+  /* Bas du footer */
+  .footer-bottom {
+    border-top: 1px solid #ffd700;
+    margin-top: 20px;
+    padding-top: 10px;
+    font-size: 0.9rem;
+    color: #fff;
+  }
+  
+  .footer-bottom a {
+    color: #ffd700;
+    text-decoration: none;
+    margin: 0 15px;
+    transition: color 0.3s ease;
+  }
+  
+  .footer-bottom a:hover {
+    color: #e6c200;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .footer-content {
+      flex-direction: column;
+      text-align: center;
+    }
+  
+    .footer-section {
+      margin-bottom: 30px;
+    }
+  
+    .footer-bottom {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .social-icons a img {
+      width: 35px;
+      height: 35px;
+    }
+  
+    .footer-section h2 {
+      font-size: 1.3rem;
+    }
+  
+    .footer-section p,
+    .footer-section ul li a {
+      font-size: 1rem;
+    }
+  }
+  

@@ -1,0 +1,103 @@
+.login-container {
+    background-color: #000; /* Fond noir */
+    color: #ffd700; /* Texte or */
+    padding: 20px;
+    max-width: 400px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(255, 215, 0, 0.3); /* Ombre dorée */
+  }
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #ffd700;
+    font-size: 1.8rem;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #ffd700;
+  }
+  
+  input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ffd700;
+    border-radius: 5px;
+    background-color: #111;
+    color: #ffd700;
+    font-size: 1rem;
+  }
+  
+  button.login-btn {
+    padding: 10px 20px;
+    background-color: #ffd700;
+    color: #000; /* Texte noir */
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  button.login-btn:hover {
+    background-color: #e6c200; /* Or plus foncé */
+  }
+  
+  .register-link {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .register-link button {
+    padding: 10px 20px;
+    background-color: transparent;
+    color: #ffd700;
+    border: 1px solid #ffd700;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .register-link button:hover {
+    background-color: #ffd700;
+    color: #000; /* Texte noir */
+  }
+  
+  .error-message {
+    color: red;
+    text-align: center;
+    margin-top: 15px;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .login-container {
+      width: 90%;
+      padding: 15px;
+    }
+  
+    h1 {
+      font-size: 1.5rem;
+    }
+  
+    input {
+      font-size: 0.9rem;
+    }
+  
+    button.login-btn {
+      font-size: 0.9rem;
+    }
+  }
+  

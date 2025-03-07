@@ -1,0 +1,41 @@
+<div class="admin-dashboard-container">
+    <h1>Tableau de Bord Administrateur</h1>
+    <div class="dashboard-cards">
+      <!-- Gestion des produits -->
+      <div class="card" (click)="navigateTo('/admin/products')">
+        <h2>Produits</h2>
+        <p>Gérer les produits en vente.</p>
+      </div>
+  
+      <!-- Gestion des appareils reconditionnés -->
+      <div class="card" (click)="navigateTo('/admin/refurbished-devices')">
+        <h2>Appareils Reconditionnés</h2>
+        <p>Gérer les appareils reconditionnés.</p>
+      </div>
+  
+      <!-- Gestion des utilisateurs -->
+      <div class="card" (click)="navigateTo('/admin/users')">
+        <h2>Utilisateurs</h2>
+        <p>Gérer les comptes utilisateurs.</p>
+      </div>
+  
+      <!-- Gestion des commandes -->
+      <div class="card" (click)="navigateTo('/admin/orders')">
+        <h2>Commandes</h2>
+        <p>Voir et gérer les commandes.</p>
+      </div>
+  
+      <!-- Gestion des réparations -->
+      <div class="card" (click)="navigateTo('/admin/repairs')">
+        <h2>Réparations</h2>
+        <p>Suivre et gérer les réparations.</p>
+      </div>
+  
+      <!-- Gestion des avis -->
+      <div class="card" (click)="navigateTo('/admin/reviews')">
+        <h2>Avis Clients</h2>
+        <p>Modérer les avis clients.</p>
+      </div>
+    </div>
+  </div>
+  

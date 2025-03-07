@@ -1,0 +1,135 @@
+.appointment-container {
+  background-color: #000; /* Fond noir */
+  color: #ffd700; /* Texte or */
+  padding: 20px;
+  max-width: 600px;
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(255, 215, 0, 0.3); /* Ombre dorée */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #ffd700;
+  font-size: 1.8rem;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #ffd700;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ffd700;
+  border-radius: 5px;
+  background-color: #111; /* Noir profond */
+  color: #ffd700; /* Texte or */
+  font-size: 1rem;
+}
+
+textarea {
+  resize: none;
+  height: 100px;
+}
+
+button.submit-btn,
+button.login-btn {
+  padding: 10px 20px;
+  background-color: #ffd700;
+  color: #000; /* Texte noir */
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+button.submit-btn:hover,
+button.login-btn:hover {
+  background-color: #e6c200; /* Or plus foncé */
+}
+
+.login-form {
+  background-color: #111; /* Fond noir profond pour le formulaire */
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(255, 215, 0, 0.2); /* Ombre légère */
+}
+
+.login-form h2 {
+  text-align: center;
+  color: #ffd700;
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+}
+
+.login-notice {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.login-notice button {
+  padding: 10px 20px;
+  background-color: #ffd700;
+  color: #000; /* Texte noir */
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-notice button:hover {
+  background-color: #e6c200; /* Or plus foncé */
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+@media screen and (max-width: 768px) {
+  .appointment-container {
+    padding: 15px;
+    box-shadow: none;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  label {
+    font-size: 0.9rem;
+  }
+
+  input,
+  textarea {
+    font-size: 0.9rem;
+  }
+
+  button.submit-btn,
+  button.login-btn {
+    font-size: 0.9rem;
+  }
+
+  .login-form h2 {
+    font-size: 1.3rem;
+  }
+}

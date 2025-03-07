@@ -1,0 +1,65 @@
+<div class="home-container">
+  <!-- Présentation de l'entreprise -->
+  <section class="section presentation">
+    <h1>Bienvenue chez Centi-Phone</h1>
+    <p>Votre expert en réparation de smartphones et vente de produits reconditionnés.</p>
+  </section>
+
+  <!-- Tarifs des réparations -->
+  <section class="section tarifs">
+    <h2>Nos Tarifs de Réparation</h2>
+    <ul>
+      <li>Remplacement d'écran : <span>50€</span></li>
+      <li>Réparation de batterie : <span>30€</span></li>
+      <li>Connecteur de charge : <span>25€</span></li>
+      <li>Et bien plus encore...</li>
+    </ul>
+  </section>
+
+  <!-- Carrousel des produits à vendre -->
+  <section class="section produits">
+    <h2>Produits à Vendre</h2>
+    <div class="carousel">
+      <div class="carousel-item" *ngFor="let product of products">
+        <img [src]="product.photoProduit" [alt]="product.nom" />
+        <h3>{{ product.nom }}</h3>
+        <p>{{ product.description }}</p>
+        <p class="price">{{ product.prix | currency: 'EUR' }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Carrousel des appareils reconditionnés -->
+  <section class="section reconditionnes">
+    <h2>Appareils Reconditionnés</h2>
+    <div class="carousel">
+      <div class="carousel-item" *ngFor="let device of refurbishedDevices">
+        <img [src]="device.photoProduit" [alt]="device.nom" />
+        <h3>{{ device.nom }}</h3>
+        <p>{{ device.description }}</p>
+        <p class="price">{{ device.prix | currency: 'EUR' }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cadre pour demander un devis -->
+  <div class="action-card">
+    <h2>Demander un devis</h2>
+    <p>Obtenez un devis personnalisé pour la réparation de votre appareil.</p>
+    <button (click)="redirectToDevis()">Demander un devis</button>
+  </div>
+
+  <!-- Cadre pour prendre un rendez-vous -->
+  <div class="action-card">
+    <h2>Prendre un rendez-vous</h2>
+    <p>Réservez un créneau pour une réparation rapide et efficace.</p>
+    <button (click)="redirectToRdv()">Prendre un rendez-vous</button>
+  </div>
+
+  <!-- Lien vers la page de connexion -->
+  <div class="action-card">
+    <h2>Vous avez un compte ?</h2>
+    <p>Connectez-vous pour accéder à plus de fonctionnalités.</p>
+    <button (click)="redirectToLogin()">Se connecter</button>
+  </div>
+</div>

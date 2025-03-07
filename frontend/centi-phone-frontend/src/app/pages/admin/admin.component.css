@@ -1,0 +1,75 @@
+/* Conteneur principal */
+.admin-dashboard-container {
+    background-color: #000; /* Fond noir */
+    color: #ffd700; /* Texte or */
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  
+  /* Titre principal */
+  .admin-dashboard-container h1 {
+    font-size: 2rem;
+    margin-bottom: 30px;
+    color: #ffd700;
+  }
+  
+  /* Cartes du tableau de bord */
+  .dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+  
+  .card {
+    background-color: #111; /* Fond gris foncé */
+    border: 2px solid #ffd700; /* Bordure or */
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0px 4px 8px rgba(255, 215, 0, 0.3); /* Ombre dorée */
+  }
+  
+  .card:hover {
+    transform: scale(1.05); /* Zoom léger au survol */
+    box-shadow: 0px 6px 12px rgba(255, 215, 0, 0.5);
+  }
+  
+  .card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #ffd700;
+  }
+  
+  .card p {
+    font-size: 1rem;
+    color: #fff;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .card h2 {
+      font-size: 1.3rem;
+    }
+  
+    .card p {
+      font-size: 0.9rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .card {
+      padding: 15px;
+    }
+  
+    .card h2 {
+      font-size: 1.2rem;
+    }
+  
+    .card p {
+      font-size: 0.8rem;
+    }
+  }
+  

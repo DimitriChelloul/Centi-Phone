@@ -1,0 +1,209 @@
+/* Conteneur principal */
+.home-container {
+  background-color: #000; /* Fond noir */
+  color: #ffd700; /* Texte or */
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* Sections principales */
+.section {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.section h1,
+.section h2 {
+  color: #ffd700; /* Texte or */
+  margin-bottom: 10px;
+}
+
+.section p {
+  color: #fff; /* Texte blanc pour contraste */
+  font-size: 1rem;
+  margin-bottom: 15px;
+}
+
+/* Tarifs de réparation */
+.tarifs ul {
+  list-style: none;
+  padding: 0;
+}
+
+.tarifs li {
+  font-size: 1.1rem;
+  margin: 8px 0;
+}
+
+.tarifs span {
+  color: #ffd700;
+  font-weight: bold;
+}
+
+/* Style pour les carrousels */
+.carousel {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding: 10px;
+  scroll-behavior: smooth;
+}
+
+.carousel::-webkit-scrollbar {
+  height: 8px;
+}
+
+.carousel::-webkit-scrollbar-thumb {
+  background-color: #ffd700;
+  border-radius: 5px;
+}
+
+.carousel-item {
+  flex: 0 0 auto;
+  width: 200px;
+  text-align: center;
+  border: 2px solid #ffd700; /* Bordure or */
+  border-radius: 8px;
+  padding: 10px;
+  background-color: #111; /* Fond gris foncé */
+  box-shadow: 0px 4px 8px rgba(255, 215, 0, 0.3); /* Ombre dorée */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.carousel-item:hover {
+  transform: scale(1.05); /* Zoom léger au survol */
+  box-shadow: 0px 6px 12px rgba(255, 215, 0, 0.5);
+}
+
+.carousel-item img {
+  max-width: 100%;
+  border-radius: 5px;
+}
+
+.carousel-item h3 {
+  font-size: 1.1rem;
+  margin: 10px 0;
+  color: #ffd700;
+}
+
+.carousel-item p {
+  font-size: 0.9rem;
+  color: #fff;
+}
+
+.carousel-item .price {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #ffd700;
+  margin-top: 5px;
+}
+
+/* Cadres pour devis et rendez-vous */
+.action-card {
+  background-color: #111; /* Fond gris foncé */
+  border: 2px solid #ffd700; /* Bordure or */
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  margin: 20px auto;
+  width: 300px;
+  box-shadow: 0px 4px 8px rgba(255, 215, 0, 0.3); /* Ombre dorée */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.action-card:hover {
+  transform: scale(1.05); /* Zoom léger au survol */
+  box-shadow: 0px 6px 12px rgba(255, 215, 0, 0.5);
+}
+
+.action-card h2 {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+}
+
+.action-card p {
+  font-size: 1rem;
+  margin-bottom: 15px;
+  color: #fff;
+}
+
+.action-card button {
+  padding: 10px 20px;
+  background-color: #ffd700;
+  color: #000; /* Texte noir pour contraste */
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.action-card button:hover {
+  background-color: #e6c200; /* Or plus foncé au survol */
+}
+
+/* Responsiveness */
+
+/* Tablettes */
+@media (max-width: 768px) {
+  .carousel-item {
+    width: 160px;
+  }
+
+  .action-card {
+    width: 80%;
+    margin: 15px auto;
+  }
+
+  .tarifs ul li {
+    font-size: 1rem; /* Réduction de la taille du texte */
+  }
+
+  .carousel {
+    gap: 15px;
+  }
+
+  .section h1,
+  .section h2 {
+    font-size: 1.8rem; /* Réduction de la taille des titres */
+  }
+}
+
+/* Smartphones */
+@media (max-width: 480px) {
+  .home-container {
+    padding: 10px;
+  }
+
+  .carousel-item {
+    width: 120px; /* Taille plus petite pour les images */
+    padding: 8px;
+  }
+
+  .action-card {
+    width: 90%;
+    padding: 15px;
+  }
+
+  .action-card h2 {
+    font-size: 1.1rem;
+  }
+
+  .action-card p {
+    font-size: 0.9rem;
+  }
+
+  .action-card button {
+    font-size: 0.9rem;
+    padding: 8px 15px;
+  }
+
+  .section h1,
+  .section h2 {
+    font-size: 1.5rem; /* Réduction pour les petits écrans */
+  }
+
+  .tarifs ul li {
+    font-size: 0.9rem; /* Réduction de la taille des tarifs */
+  }
+}
