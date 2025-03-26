@@ -16,6 +16,7 @@ import ReparationRoutes from "../src/routes/ReparationRoutes";
 import { testDbConnection } from './../../dal/src/dal/config/db';
 import { doubleCsrf } from 'csrf-csrf';
 import { authenticateToken } from "./middleware/authenticateToken";
+import CalendrierRoutes from "routes/CalendrierRoutes";
 
 dotenv.config();
 export const app = express();
@@ -233,6 +234,7 @@ app.use("/api/produits", ProduitRoutes);
 app.use("/api/commandes", CommandeRoutes);
 app.use("/api/paiement", PaymentRoutes);
 app.use("/api/reparations", ReparationRoutes);
+app.use("/api/calendrier",CalendrierRoutes,)
 
 // Middleware global pour les erreurs
 app.use(errorHandler as ErrorRequestHandler);

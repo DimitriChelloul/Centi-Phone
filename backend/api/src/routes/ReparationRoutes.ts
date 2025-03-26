@@ -29,6 +29,11 @@ const reparationController = new ReparationController();
 router.post("/rdv", authenticateToken, validateCreateRdv, handleValidationErrors, reparationController.createRdv);
 
 
+router.get('/rdvs', ReparationController.getAllRdvs);
+router.get('/rdv/:id', ReparationController.getRdvDetails);
+router.put('/rdv/:id/status', ReparationController.updateRdvStatus);
+
+
 // Ajouter un suivi de réparation
 //Definition de la route /suivi
 //Methode HTTP : POST

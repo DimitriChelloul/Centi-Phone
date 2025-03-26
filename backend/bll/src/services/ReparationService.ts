@@ -28,6 +28,8 @@ export class RepairService implements IRepairService {
   //  Elle retourne une promesse de type void.
   async createRdv(id: number, problemeDescription: string | undefined, dateRdv: Date): Promise<void> {
     // Vérifie si la date est valide
+
+    const duree = 20;
     if (!(dateRdv instanceof Date) || isNaN(dateRdv.getTime())) {
         throw new Error("Format de date invalide.");
     }
@@ -41,6 +43,13 @@ export class RepairService implements IRepairService {
         problemeDescription,
         dateRdv
     });
+
+    const isAvailable = await this.repairRepo.isSlotAvailable(dateRdv,duree);
+
+    if (!isAvailable) {
+      throw new Error('Ce créneau a déjà été réservé.');
+    }
+
         // Étape 1 : Récupérer les informations de l'utilisateur
         const utilisateur = await this.unitOfWork.utilisateurRepository.getUtilisateurById(id);
         if (!utilisateur) {
@@ -70,6 +79,20 @@ export class RepairService implements IRepairService {
         await this.unitOfWork.rollback();
         throw error;
     }
+}
+
+async getAllRdvs():Promise<{ rdv: Rdv, utilisateur: any }[]> {
+  return await this.repairRepo.getAllRdvs();
+}
+
+
+
+async getRdvDetails(id: number):Promise<{ rdv: Rdv, utilisateur: any } | null>{
+  return await this.repairRepo.getRdvDetailsById(id);
+}
+
+async updateRdvStatus(id: number, statut: 'en attente' | 'en cours' | 'termine'): Promise<void> {
+ return await this.repairRepo.updateRdvStatus(id, statut);
 }
 
 

@@ -1,94 +1,118 @@
-<div class="appointment-container">
-  <h1>Prendre un Rendez-vous</h1>
+<body>
+  <div class="appointment-container">
+    <h1>Prendre un Rendez-vous</h1>
 
-  <!-- Formulaire de prise de rendez-vous -->
-  <form *ngIf="!showLoginPrompt" (ngSubmit)="submitAppointment()">
-    <div class="form-group">
-      <label for="nom">Nom</label>
-      <input
-        type="text"
-        id="nom"
-        [(ngModel)]="appointmentData.nom"
-        name="nom"
-        required
-        placeholder="Entrez votre nom"
-      />
-    </div>
-
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input
-        type="email"
-        id="email"
-        [(ngModel)]="appointmentData.email"
-        name="email"
-        required
-        placeholder="Entrez votre email"
-      />
-    </div>
-
-    <div class="form-group">
-      <label for="date">Date du rendez-vous</label>
-      <input
-        type="date"
-        id="date"
-        [(ngModel)]="appointmentData.dateRdv"
-        name="date"
-        required
-        pattern="\d{4}-\d{2}-\d{2}"
-      />
-    </div>
-
-    <div class="form-group">
-      <label for="description">Description du problème</label>
-      <textarea
-        id="description"
-        [(ngModel)]="appointmentData.description"
-        name="description"
-        required
-        placeholder="Décrivez brièvement votre problème"
-      ></textarea>
-    </div>
-
-    <button type="submit" class="submit-btn">Confirmer le rendez-vous</button>
-  </form>
-
-  <!-- Formulaire de connexion si l'utilisateur n'est pas connecté -->
-  <div *ngIf="showLoginPrompt" class="login-form">
-    <h2>Connexion requise</h2>
-    <p>Veuillez vous connecter pour valider votre rendez-vous.</p>
-
-    <form (ngSubmit)="loginAndSubmit()">
+    <!-- Formulaire de prise de rendez-vous -->
+    <form *ngIf="!showLoginPrompt" (ngSubmit)="submitAppointment()">
       <div class="form-group">
-        <label for="loginEmail">Email</label>
+        <label for="nom">Nom</label>
+        <input
+          type="text"
+          id="nom"
+          [(ngModel)]="appointmentData.nom"
+          name="nom"
+          required
+          placeholder="Entrez votre nom"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
         <input
           type="email"
-          id="loginEmail"
-          [(ngModel)]="credentials.email"
-          name="loginEmail"
+          id="email"
+          [(ngModel)]="appointmentData.email"
+          name="email"
           required
           placeholder="Entrez votre email"
         />
       </div>
 
       <div class="form-group">
-        <label for="loginPassword">Mot de passe</label>
+        <label for="date">Date du rendez-vous</label>
         <input
-          type="password"
-          id="loginPassword"
-          [(ngModel)]="credentials.motDePasse"
-          name="loginPassword"
+          type="date"
+          id="date"
+          [(ngModel)]="appointmentData.dateRdv"
+          name="date"
           required
-          placeholder="Entrez votre mot de passe"
+          pattern="\d{4}-\d{2}-\d{2}"
+          (change)="onDateChange()"
         />
       </div>
 
-      <button type="submit" class="login-btn">Se connecter</button>
-    </form>
-  </div>
+      <!-- Sélection des créneaux disponibles -->
+      <div class="form-group" *ngIf="availableSlots.length > 0">
+        <label>Créneaux disponibles :</label>
+        <div class="slots">
+          <button
+            *ngFor="let slot of availableSlots"
+            [class.selected]="slot === selectedSlot"
+            (click)="selectSlot(slot)"
+            type="button"
+          >
+            {{ slot | date: 'HH:mm' }}
+          </button>
+        </div>
+      </div>
 
-  <!-- Message d'erreur -->
-  <div *ngIf="errorMessage" class="error-message">
-    {{ errorMessage }}
+      <div class="form-group">
+        <label for="description">Description du problème</label>
+        <textarea
+          id="description"
+          [(ngModel)]="appointmentData.description"
+          name="description"
+          required
+          placeholder="Décrivez brièvement votre problème"
+        ></textarea>
+      </div>
+
+      <button
+        type="submit"
+        class="submit-btn"
+        [disabled]="!selectedSlot"
+      >
+        Confirmer le rendez-vous
+      </button>
+    </form>
+
+    <!-- Formulaire de connexion si l'utilisateur n'est pas connecté -->
+    <div *ngIf="showLoginPrompt" class="login-form">
+      <h2>Connexion requise</h2>
+      <p>Veuillez vous connecter pour valider votre rendez-vous.</p>
+
+      <form (ngSubmit)="loginAndSubmit()">
+        <div class="form-group">
+          <label for="loginEmail">Email</label>
+          <input
+            type="email"
+            id="loginEmail"
+            [(ngModel)]="credentials.email"
+            name="loginEmail"
+            required
+            placeholder="Entrez votre email"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="loginPassword">Mot de passe</label>
+          <input
+            type="password"
+            id="loginPassword"
+            [(ngModel)]="credentials.motDePasse"
+            name="loginPassword"
+            required
+            placeholder="Entrez votre mot de passe"
+          />
+        </div>
+
+        <button type="submit" class="login-btn">Se connecter</button>
+      </form>
+    </div>
+
+    <!-- Message d'erreur -->
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
   </div>
-</div>
+</body>

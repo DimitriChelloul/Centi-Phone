@@ -103,6 +103,75 @@ export class RepairRepository implements IRepairRepository {
 }
 
   
+async getAllRdvs(): Promise<{ rdv: Rdv, utilisateur: any }[]> {
+  const result = await query(
+    `SELECT r.*, u.nom, u.prenom, u.email, u.telephone
+     FROM rdv r
+     JOIN utilisateurs u ON r.utilisateur_id = u.id`
+  );
+
+  return result.map((row: any) => ({
+    rdv: new Rdv(row),
+    utilisateur: {
+      id: row.utilisateur_id,
+      nom: row.nom,
+      prenom: row.prenom,
+      email: row.email,
+      telephone: row.telephone
+    }
+  }));
+}
+
+async getRdvDetailsById(id: number): Promise<{ rdv: Rdv, utilisateur: any } | null> {
+  const result = await query(
+    `SELECT r.*, u.nom, u.prenom, u.email, u.telephone
+     FROM rdv r
+     JOIN utilisateurs u ON r.utilisateur_id = u.id
+     WHERE r.id = $1`, 
+    [id]
+  );
+
+  if (result.length === 0) return null;
+
+  return {
+    rdv: new Rdv(result[0]),
+    utilisateur: {
+      id: result[0].utilisateur_id,
+      nom: result[0].nom,
+      prenom: result[0].prenom,
+      email: result[0].email,
+      telephone: result[0].telephone
+    }
+  };
+}
+
+async getRdvByDate(date: Date): Promise<Rdv[]> {
+  const res = await this.pool.query(
+    `SELECT * FROM rendez_vous WHERE date_rendez_vous::date = $1`,
+    [date.toISOString().split('T')[0]]
+  );
+  return res.rows.map(row => new Rdv(row));
+}
+
+async updateRdvStatus(id: number, statut: 'en attente' | 'en cours' | 'termine'): Promise<void> {
+  await query(`UPDATE rdv SET statut = $1 WHERE id = $2`, [statut, id]);
+}
+
+async isSlotAvailable(date: Date, dureeMinutes: number): Promise<boolean> {
+  const debutRdv = date;
+  const finRdv = new Date(debutRdv.getTime() + dureeMinutes * 60000);
+
+  const res = await this.pool.query(
+    `SELECT COUNT(*) FROM rendez_vous 
+     WHERE (date_rendez_vous >= $1 AND date_rendez_vous < $2) 
+     OR (date_rendez_vous + INTERVAL '20 minutes' > $1 AND date_rendez_vous <= $2)`,
+    [debutRdv.toISOString(), finRdv.toISOString()]
+  );
+
+  return parseInt(res.rows[0].count, 10) === 0;
+}
+
+
   
   
 

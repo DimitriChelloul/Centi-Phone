@@ -7,6 +7,7 @@ export class ReparationController {
 
   // utilisée pour accéder aux méthodes du service de réparation
   private repairService: RepairService;
+  static repairService: any;
 //Constructeur de la classe ReparationController 
   constructor() {
     try {
@@ -74,6 +75,7 @@ export class ReparationController {
 
         res.status(201).json({ message: "Rendez-vous créé avec succès." });
     } catch (error) {
+      res.status(409).json({ error: 'Créneau non disponible, veuillez choisir un autre horaire.' });
         next(error);
     }
 };
@@ -126,4 +128,42 @@ export class ReparationController {
       next(error);
     }
   };
+
+    // Récupérer tous les RDVs
+    static async getAllRdvs(req: Request, res: Response) {
+      try {
+        const rdvs = await this.repairService.getAllRdvs();
+        res.json(rdvs);
+      } catch (error) {
+        res.status(500).json({ message: 'Erreur serveur', error });
+      }
+    }
+  
+    // Récupérer un RDV spécifique
+    static async getRdvDetails(req: Request, res: Response):Promise<void> {
+      try {
+        const rdvDetails = await this.repairService.getRdvDetails(parseInt(req.params.id));
+        if (!rdvDetails) {
+           res.status(404).json({ message: 'Rendez-vous non trouvé' });
+        }
+        res.json(rdvDetails);
+      } catch (error) {
+        res.status(500).json({ message: 'Erreur serveur', error });
+      }
+    }
+  
+    // Modifier le statut d'un RDV
+    static async updateRdvStatus(req: Request, res: Response):Promise<void> {
+      try {
+        const { statut } = req.body;
+        if (!['en attente', 'en cours', 'termine'].includes(statut)) {
+           res.status(400).json({ message: 'Statut invalide' });
+        }
+  
+        await this.repairService.updateRdvStatus(parseInt(req.params.id), statut);
+        res.json({ message: 'Statut mis à jour avec succès' });
+      } catch (error) {
+        res.status(500).json({ message: 'Erreur serveur', error });
+      }
+    }
 }

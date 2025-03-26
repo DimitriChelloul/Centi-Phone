@@ -10,6 +10,11 @@ export interface IRepairRepository {
   getRdvByUserId(userId: number): Promise<Rdv[]>;
   getRdvById(id: number): Promise<Rdv | null>;
   deleteRdv(id: number): Promise<void>;
+  getAllRdvs(): Promise<{ rdv: Rdv, utilisateur: any }[]>;
+  getRdvDetailsById(id: number): Promise<{ rdv: Rdv, utilisateur: any } | null>;
+  updateRdvStatus(id: number, statut: 'en attente' | 'en cours' | 'termine'): Promise<void>;
+  getRdvByDate(date: Date): Promise<Rdv[]>;
+  isSlotAvailable(date: Date, dureeMinutes: number): Promise<boolean>
 
   // Gestion des suivis de réparation
   getRSuiviReparationByAppointmentId(appointmentId: number): Promise<SuiviReparation[]>;

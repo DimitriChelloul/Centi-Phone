@@ -8,6 +8,10 @@ export interface IRepairService {
   getRdvsByUserId(utilisateurId: number): Promise<Rdv[]>;
   getRdvById(rdvId: number): Promise<Rdv | null>;
   cancelRdv(rdvId: number): Promise<void>;
+   updateRdvStatus(id: number, statut: 'en attente' | 'en cours' | 'termine'): Promise<void>;
+   getRdvDetails(id: number):Promise<{ rdv: Rdv, utilisateur: any } | null>;
+   getAllRdvs():Promise<{ rdv: Rdv, utilisateur: any }[]>;
+   
 
   // Gestion des suivis de réparation
   addSuiviReparation(rdvId: number, statut: 'en cours' | 'termine'): Promise<void>;
